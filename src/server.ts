@@ -2,7 +2,7 @@
 // The only modules to be imported higher - node modules with es6-promise 3.x or other Promise polyfill dependency
 // (rule of thumb: do it if you have zone.js exception that it has been overwritten)
 // if you are including modules that modify Promise, such as NewRelic,, you must include them before polyfills
-require('newrelic');
+// require('newrelic');
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 import 'ts-helpers';
@@ -106,7 +106,7 @@ export class Server {
           // instruct browser to revalidate in 60 seconds
           // res.header('Cache-Control', 'max-age=60');
           next();
-        }, express.static(path.join(__dirname, 'dist/client'), {index: false}));
+        }, express.static('dist/client', {index: false}));
         
         
          this.app.use("/client", express.static("dist/client", {

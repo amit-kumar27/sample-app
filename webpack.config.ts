@@ -43,7 +43,7 @@ export var commonPlugins = [
 
 export var commonConfig = {
   // https://webpack.github.io/docs/configuration.html#devtool
-  devtool: isDev ? 'source-map' : '',
+  devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.js', '.json'],
     modules: [ root('node_modules') ]
@@ -126,6 +126,20 @@ export var clientConfig = {
 };
 
 
+export function angularExternals() {
+  return function (context, request, callback) {
+    if (request.startsWith('@angular/')) {
+      return callback(null, {
+        root: ['ng', request.replace(/@angularclass|@angular|angular2-|ng2-|ng-|@ng-|angular-|@ngrx|ngrx-|@angular2|ionic|@ionic|-angular2|-ng2|-ng/, '')],
+        commonjs: request,
+        commonjs2: request,
+        amd: request
+      });
+    }
+    callback();
+  };
+}
+
 // Server.
 export var serverPlugins = [
    new webpack.DefinePlugin({
@@ -146,9 +160,7 @@ export var serverConfig = {
       { test: /@angular(\\|\/)material/, use: "imports-loader?window=>global" }
     ],
   },
-  externals: includeClientPackages(
-    /@angularclass|@angular|angular2-|ng2-|ng-|@ng-|angular-|@ngrx|ngrx-|@angular2|ionic|@ionic|-angular2|-ng2|-ng/
-  ),
+  externals: angularExternals(),
   node: {
     global: true,
     crypto: true,
