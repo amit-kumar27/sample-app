@@ -2,7 +2,7 @@
 // The only modules to be imported higher - node modules with es6-promise 3.x or other Promise polyfill dependency
 // (rule of thumb: do it if you have zone.js exception that it has been overwritten)
 // if you are including modules that modify Promise, such as NewRelic,, you must include them before polyfills
-require('newrelic');
+// require('newrelic');
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 import 'ts-helpers';
@@ -74,17 +74,26 @@ export class Server {
       // config();
       // routers();
       
+      
+
       private config(): void {
         this.app.use(responseTime());
-        this.app.engine('.html', ngExpressEngine({
-          bootstrap: MainModule,
-          providers: [
-            // use only if you have shared state between users
-            // { provide: 'LRU', useFactory: () => new LRU(10) }
-        
-            // stateless providers only since it's shared
-          ]
-        }));
+        this.app.engine('.html', (_, options, callback) => {
+          const engine = ngExpressEngine({
+            bootstrap: MainModule,
+            providers: [
+              {
+                provide: 'REQUEST',
+                useValue: options.req
+              },
+              {
+                provide: 'RESPONSE',
+                useValue: options.req.res
+              }
+            ]
+          });
+          engine(_, options, callback);
+        });
         //ToDo: remove hardcoding 
         this.app.set('views', 'dist');
         this.app.set('view engine', 'html');
@@ -106,7 +115,7 @@ export class Server {
           // instruct browser to revalidate in 60 seconds
           // res.header('Cache-Control', 'max-age=60');
           next();
-        }, express.static(path.join(__dirname, 'dist/client'), {index: false}));
+        }, express.static('dist/client', {index: false}));
         
         
          this.app.use("/client", express.static("dist/client", {

@@ -7,7 +7,7 @@ const _routes: Routes = [
     path: "",
     component: App
   }];
-const _imports = [];
+const _imports = [RouterModule.forChild(_routes)];
 
 const _declarations = [App];
 const _providers = [];

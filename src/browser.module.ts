@@ -1,12 +1,13 @@
 import { RootModule } from './client/root.module';
 import { Root } from './client/root.component';
-import { NgModule } from '@angular/core';
+import { NgModule, Compiler, COMPILER_OPTIONS, CompilerFactory } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { IdlePreload, IdlePreloadModule } from '@angularclass/idle-preload';
-import { CookieModule } from 'ngx-cookie';
-
+import { BrowserCookiesModule } from '@ngx-utils/cookies/browser';
+import { JitCompilerFactory } from '@angular/platform-browser-dynamic';
+import { CommonBrowserModule } from './utils/index-browser';
 
 // import * as LRU from 'modern-lru';
 
@@ -24,7 +25,9 @@ export function getResponse() {
   return {};
 }
 
-
+export function createCompiler(compilerFactory: CompilerFactory) {
+  return compilerFactory.createCompiler();
+}
 
 @NgModule({
   bootstrap: [ Root ],
@@ -34,15 +37,19 @@ export function getResponse() {
     }),
     FormsModule,
     RouterModule,
-    CookieModule.forRoot(),
+    BrowserCookiesModule.forRoot(),
     IdlePreloadModule.forRoot(),
+    CommonBrowserModule
   ],
   providers: [
 
     { provide: 'req', useFactory: getRequest },
     { provide: 'res', useFactory: getResponse },
 
-    { provide: 'LRU', useFactory: getLRU, deps: [] }
+    { provide: 'LRU', useFactory: getLRU, deps: [] },
+    {provide: COMPILER_OPTIONS, useValue: {}, multi: true},
+    {provide: CompilerFactory, useClass: JitCompilerFactory, deps: [COMPILER_OPTIONS]},
+    {provide: Compiler, useFactory: createCompiler, deps: [CompilerFactory]}
   ]
 })
 export class MainModule {

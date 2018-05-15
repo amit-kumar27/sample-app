@@ -22,6 +22,14 @@ function renderPage(req: express.Request, res: express.Response){
   res.render("index", {
     req,
     res,
+    providers: [
+      {
+        provide: 'REQUEST', useValue: (req)
+      },
+      {
+        provide: 'RESPONSE', useValue: (res)
+      }
+    ],
     preboot:true,
     baseUrl: "/",
     requestUrl: req.originalUrl,
