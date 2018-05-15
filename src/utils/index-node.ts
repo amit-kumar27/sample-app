@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 
 import {Cookie} from "./cookie";
-import { CookieNode } from './node/cookie-node';
+import { CookieBrowser } from './browser/cookie-browser';
+//import { RequestCookies } from './request-cookies';
 
 @NgModule({
   providers:[
-    {provide:Cookie, useClass:CookieNode}
+    //RequestCookies,
+    {provide:Cookie, useClass:CookieBrowser}
   ]
 })
 export class CommonNodeModule {

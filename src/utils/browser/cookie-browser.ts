@@ -1,12 +1,12 @@
 
 import { Optional, Injectable } from "@angular/core";
 import { Cookie } from "../cookie";
-import { CookieService, CookieOptions } from 'ngx-cookie';
+import { CookiesOptions, CookiesService } from '@ngx-utils/cookies';
 
 @Injectable()
 export class CookieBrowser implements Cookie {
   constructor( 
-    private _cookieService:CookieService
+    private _cookieService:CookiesService
   ) {}
 
   get(key: string): string { 
@@ -17,12 +17,12 @@ export class CookieBrowser implements Cookie {
     return this._cookieService.getAll(); 
   }
 
-  put(key: string, value: string, options?: CookieOptions) {
+  put(key: string, value: string, options?: CookiesOptions) {
     this._cookieService.put(key, value, options); 
   }
 
 
-  remove(key: string, options?: CookieOptions): void {
+  remove(key: string, options?: CookiesOptions): void {
     this._cookieService.remove(key, options); 
   }
 

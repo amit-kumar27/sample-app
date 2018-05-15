@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
 import { IdlePreload, IdlePreloadModule } from '@angularclass/idle-preload';
-import { CookieModule } from 'ngx-cookie';
+import { BrowserCookiesModule } from '@ngx-utils/cookies/browser';
 import { JitCompilerFactory } from '@angular/platform-browser-dynamic';
 import { CommonBrowserModule } from './utils/index-browser';
 
@@ -37,7 +37,7 @@ export function createCompiler(compilerFactory: CompilerFactory) {
     }),
     FormsModule,
     RouterModule,
-    CookieModule.forRoot(),
+    BrowserCookiesModule.forRoot(),
     IdlePreloadModule.forRoot(),
     CommonBrowserModule
   ],

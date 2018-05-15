@@ -74,17 +74,26 @@ export class Server {
       // config();
       // routers();
       
+      
+
       private config(): void {
         this.app.use(responseTime());
-        this.app.engine('.html', ngExpressEngine({
-          bootstrap: MainModule,
-          providers: [
-            // use only if you have shared state between users
-            // { provide: 'LRU', useFactory: () => new LRU(10) }
-        
-            // stateless providers only since it's shared
-          ]
-        }));
+        this.app.engine('.html', (_, options, callback) => {
+          const engine = ngExpressEngine({
+            bootstrap: MainModule,
+            providers: [
+              {
+                provide: 'REQUEST',
+                useValue: options.req
+              },
+              {
+                provide: 'RESPONSE',
+                useValue: options.req.res
+              }
+            ]
+          });
+          engine(_, options, callback);
+        });
         //ToDo: remove hardcoding 
         this.app.set('views', 'dist');
         this.app.set('view engine', 'html');

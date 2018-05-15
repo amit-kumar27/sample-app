@@ -8,6 +8,7 @@ export class CookieNode implements Cookie{
 
     constructor(
         @Inject('req') private readonly req: any,
+        @Inject('res') private readonly res: any
     ) {
         if (this.req !== null) {
             this.parseCookies(this.req.cookies);
@@ -34,10 +35,10 @@ export class CookieNode implements Cookie{
 
     put(key: string, value: string, options?: CookieOptions) {
         this.cookieStore[key]=value;
-        Zone.current.get('res').cookie(key,value,options);
+        this.res.cookie(key,value,options);
     }
 
     remove(key: string, options?: CookieOptions): void {
-        Zone.current.get('res').cookie(key,undefined);
+        this.res.cookie(key,undefined);
     }
 }
